@@ -98,3 +98,8 @@ npm run verify:rls     # isolation entre maisons, sur une vraie base (exige .env
 
 C'est un **instantané public** du dépôt de développement, publié sans son historique. Les
 prénoms et les adresses de la vraie famille ont été remplacés par des exemples.
+
+## Licence
+
+[MIT](LICENSE). Le nom « Casa Liva », le logo et le domaine `casaliva.app` ne sont pas couverts
+par la licence.
