@@ -11,8 +11,7 @@ Qui fait quoi, quand on est libres, et ce qu'on organise ensemble.
 
 > **Un side-project, et une étape.**
 >
-> Cette version est **fonctionnelle et utilisée aujourd'hui** par une famille, au quotidien, sur
-> [casaliva.app](https://casaliva.app) (sur invitation uniquement).
+> Cette version est **fonctionnelle et utilisée aujourd'hui** par une famille, au quotidien. (sur invitation uniquement).
 >
 > En parallèle, je mène des **entretiens avec les utilisateurs** et des **workshops** pour
 > comprendre comment les familles s'organisent vraiment : qui décide, qui oublie, ce qui se dit
