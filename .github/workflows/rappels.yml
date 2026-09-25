@@ -1,0 +1,92 @@
+name: Rappels
+
+# ═══════════════════════════════════════════════════════════════
+# L'horloge des rappels (D54, D56, JON-79).
+#
+# **Le plan Hobby de Vercel plafonne ses crons à une exécution par
+# jour.** Un rappel « dans 30 minutes » ne peut pas en sortir. Vercel ne
+# plafonne en revanche que *ses* crons, pas les appels entrants : ce
+# workflow frappe donc la route avec le secret partagé, toutes les
+# quinze minutes.
+#
+# ── Deux réserves, écrites ici parce qu'elles sont silencieuses ──
+#
+# 1. **Les workflows planifiés de GitHub sont « au mieux ».** Ils
+#    glissent de plusieurs minutes sous charge, parfois plus. C'est
+#    pourquoi la notification annonce le délai qu'elle **constate** et
+#    non celui qui était visé (`minutesRestantes`, `lib/rappels.ts`) —
+#    et pourquoi elle écrit l'heure de début juste en dessous.
+#
+# 2. **Ils se désactivent après 60 jours sans activité sur le dépôt.**
+#    Sur un agenda familial qui peut dormir un été, c'est un mode de
+#    panne réel, et muet. Le contrôle qui manque n'est pas dans ce
+#    fichier : c'est de **savoir que les rappels ont cessé**. En
+#    attendant, ce workflow échoue bruyamment (donc envoie un email
+#    GitHub) plutôt que de rendre un vert de complaisance.
+# ═══════════════════════════════════════════════════════════════
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  # De quoi l'essayer sans attendre le quart d'heure suivant.
+  workflow_dispatch:
+
+# Un passage à la fois. Deux exécutions concurrentes ne créeraient pas
+# de doublon — `rappel_envoye_pour` s'y oppose — mais elles liraient et
+# écriraient la même fenêtre pour rien.
+concurrency:
+  group: rappels
+  cancel-in-progress: false
+
+jobs:
+  frapper:
+    runs-on: ubuntu-latest
+    # ── Le secret vit dans l'environnement `Production`, pas dans ceux
+    #    du dépôt — et un secret d'environnement n'est visible QUE d'un
+    #    job qui déclare cet environnement. Sans cette ligne,
+    #    `secrets.CRON_SECRET` est vide et le workflow échoue, ce qu'il
+    #    a fait au premier essai.
+    #
+    #    C'est le bon endroit pour ce secret : il donne accès à la
+    #    production, il est rangé avec la production. Vérifié avant de
+    #    l'écrire — `Production` n'a **aucune règle de protection**
+    #    (`protection_rules: []`), donc un passage planifié s'exécute
+    #    tout de suite. Avec un relecteur requis, les rappels
+    #    attendraient une approbation toutes les quinze minutes.
+    environment: Production
+    steps:
+      - name: Réveiller la route des rappels
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${CRON_SECRET:-}" ]; then
+            echo "::error::CRON_SECRET introuvable — aucun rappel ne partira."
+            echo "::error::Attendu dans l'environnement « Production » (Settings → Environments → Production → Environment secrets), pas dans les secrets du dépôt. Le job doit déclarer `environment: Production` pour le voir."
+            exit 1
+          fi
+
+          # `-w` sépare le corps du statut : on veut les DEUX dans le
+          # journal. Un corps sans statut cache un 401, un statut sans
+          # corps cache un décompte à zéro — et c'est le décompte qui
+          # dit si les rappels vivent encore.
+          reponse=$(curl -sS --max-time 60 \
+            -w '\n%{http_code}' \
+            -H "authorization: Bearer ${CRON_SECRET}" \
+            https://casaliva.app/api/cron/rappels)
+
+          statut=$(printf '%s' "$reponse" | tail -n1)
+          corps=$(printf '%s' "$reponse" | sed '$d')
+
+          echo "statut : $statut"
+          echo "corps  : $corps"
+
+          # Un 307 ici ne veut pas dire « protégé », il veut dire
+          # « injoignable » : le proxy aurait repris la route avant le
+          # handler, et rien ne s'exécuterait — jamais. C'est la panne
+          # de la phase 4, et elle ne se signale pas toute seule.
+          if [ "$statut" != "200" ]; then
+            echo "::error::La route des rappels a répondu $statut au lieu de 200."
+            exit 1
+          fi

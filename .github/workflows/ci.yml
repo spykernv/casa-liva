@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Lint · Types · Confidentialité · Build
+    runs-on: ubuntu-latest
+
+    env:
+      # Valeurs factices : le build ne doit jamais dépendre de secrets réels.
+      # Si une de ces variables devient nécessaire au build, c'est un bug d'architecture.
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # La même version que Vercel exécute en production. Vérifier
+          # sur une autre, c'est vérifier autre chose — et `verify:ai`
+          # importe directement un module TypeScript, ce que Node ne
+          # sait faire que depuis peu.
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # Les garanties de confidentialité de Casa AI qui ne dépendent
+      # pas de la base : aucun contournement de la RLS dans `lib/ai/`,
+      # aucun titre d'événement lu sans passer par la règle de
+      # masquage, aucune clé d'IA côté navigateur. Sans secrets, donc
+      # ici et pas seulement sur un poste de développement.
+      - name: Confidentialité de Casa AI
+        run: npm run verify:ai
+
+      # Le changement d'heure, que rien d'autre ne peut voir. Neuf
+      # sites comptaient un jour en 24 h fixes et une semaine en 168 h
+      # (JON-60) : la grille dessinait un rendez-vous de 23h30 à
+      # « 22h30 » le 29 mars, et « ✨ Opportunité Casa » ne regardait
+      # jamais cette journée-là. Aucune erreur, aucune trace — et deux
+      # jours par an seulement, donc jamais pendant qu'on regarde.
+      # Sans base ni secret, comme le contrôle du dessus.
+      - name: Jours et semaines à l'heure d'horloge
+        run: npm run verify:dates
+
+      # Les rappels s'envoient SANS PERSONNE DEVANT — un workflow toutes
+      # les quinze minutes, sur un serveur. Un défaut y est invisible par
+      # construction : il ne rend pas d'erreur, il rend un rappel de
+      # trop, un rappel manquant, ou rien. Le premier à s'en apercevoir
+      # serait quelqu'un qui a raté son train. Charge le vrai module
+      # (`rappelDu`), sans base ni secret.
+      - name: Les rappels partent une fois, et à l'heure
+        run: npm run verify:rappels
+
+      - name: Build
+        run: npm run build

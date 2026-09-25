@@ -1,0 +1,46 @@
+{
+  "name": "casa-liva",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "verify:rls": "node scripts/verify-rls.mjs",
+    "verify:ai": "node scripts/verify-ai.mjs",
+    "verify:dates": "node scripts/verify-dates.mjs",
+    "verify:rappels": "node --conditions=react-server --experimental-strip-types --import ./scripts/alias-hook.mjs scripts/verify-rappels.mjs",
+    "verify:voix": "node --conditions=react-server --experimental-strip-types --import ./scripts/alias-hook.mjs scripts/verify-voix.mjs",
+    "dev:login": "node scripts/dev-login-link.mjs",
+    "icons": "node scripts/generate-icons.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.115.0",
+    "@date-fns/tz": "^1.5.0",
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.111.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
+    "lucide-react": "^1.28.0",
+    "motion": "^12.43.0",
+    "next": "16.2.12",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "^3.6.0",
+    "web-push": "^3.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/web-push": "^3.6.4",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.12",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

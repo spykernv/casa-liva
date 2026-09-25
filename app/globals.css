@@ -1,0 +1,378 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════
+   CASA LIVA — DESIGN SYSTEM
+   Principes : clean · bright · warm · premium · minimal · friendly
+   Accessibilité : 16px minimum, cibles tactiles 48px, contraste AA.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Tokens sémantiques (light) ──────────────────────────────── */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --casa-bg: #fbf7f1;
+  --casa-bg-elevated: #ffffff;
+  --casa-surface: #ffffff;
+  --casa-surface-2: #f5efe6;
+  --casa-surface-3: #ede4d7;
+
+  /* Texte */
+  --casa-ink: #1f1b17;
+  --casa-ink-2: #6b625a;
+  --casa-ink-3: #9a9088;
+  --casa-ink-inverse: #fffaf4;
+
+  /* Traits */
+  --casa-line: #eae1d5;
+  --casa-line-strong: #d9cdbc;
+
+  /* Marque */
+  --casa-accent: #e2653c;
+  --casa-accent-hover: #cf5730;
+  --casa-accent-soft: #fceae2;
+  --casa-accent-ink: #8f3616;
+
+  /* Sémantique */
+  --casa-success: #3f9e6b;
+  --casa-success-soft: #e4f3eb;
+  --casa-warn: #c08b1f;
+  --casa-warn-soft: #f9f0d9;
+  --casa-danger: #d04a35;
+  --casa-danger-soft: #fbe7e3;
+
+  /* Moment magique : "tout le monde est libre" */
+  --casa-magic: #b8862b;
+  --casa-magic-soft: #fdf4dd;
+
+  /* Ombres — chaudes, jamais grises */
+  --casa-shadow-sm: 0 1px 2px rgb(63 44 26 / 0.06), 0 1px 3px rgb(63 44 26 / 0.05);
+  --casa-shadow-md: 0 2px 4px rgb(63 44 26 / 0.05), 0 6px 16px rgb(63 44 26 / 0.08);
+  --casa-shadow-lg: 0 4px 8px rgb(63 44 26 / 0.05), 0 16px 40px rgb(63 44 26 / 0.12);
+  --casa-shadow-accent: 0 4px 14px rgb(226 101 60 / 0.32);
+}
+
+/* ── Tokens sémantiques (dark) ───────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --casa-bg: #15120f;
+    --casa-bg-elevated: #1f1b17;
+    --casa-surface: #1f1b17;
+    --casa-surface-2: #2a241e;
+    --casa-surface-3: #362e26;
+
+    --casa-ink: #f6f0e8;
+    --casa-ink-2: #b5aaa0;
+    --casa-ink-3: #877c72;
+    --casa-ink-inverse: #1f1b17;
+
+    --casa-line: #332c25;
+    --casa-line-strong: #473d33;
+
+    --casa-accent: #f0784e;
+    --casa-accent-hover: #f68b64;
+    --casa-accent-soft: #3a241b;
+    --casa-accent-ink: #ffc9b3;
+
+    --casa-success: #56b884;
+    --casa-success-soft: #16301f;
+    --casa-warn: #dcae4b;
+    --casa-warn-soft: #33290f;
+    --casa-danger: #e86a53;
+    --casa-danger-soft: #3a1d17;
+
+    --casa-magic: #e0b653;
+    --casa-magic-soft: #322712;
+
+    --casa-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --casa-shadow-md: 0 2px 4px rgb(0 0 0 / 0.3), 0 6px 16px rgb(0 0 0 / 0.45);
+    --casa-shadow-lg: 0 4px 8px rgb(0 0 0 / 0.3), 0 16px 40px rgb(0 0 0 / 0.55);
+    --casa-shadow-accent: 0 4px 14px rgb(240 120 78 / 0.3);
+  }
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --casa-bg: #15120f;
+  --casa-bg-elevated: #1f1b17;
+  --casa-surface: #1f1b17;
+  --casa-surface-2: #2a241e;
+  --casa-surface-3: #362e26;
+
+  --casa-ink: #f6f0e8;
+  --casa-ink-2: #b5aaa0;
+  --casa-ink-3: #877c72;
+  --casa-ink-inverse: #1f1b17;
+
+  --casa-line: #332c25;
+  --casa-line-strong: #473d33;
+
+  --casa-accent: #f0784e;
+  --casa-accent-hover: #f68b64;
+  --casa-accent-soft: #3a241b;
+  --casa-accent-ink: #ffc9b3;
+
+  --casa-success: #56b884;
+  --casa-success-soft: #16301f;
+  --casa-warn: #dcae4b;
+  --casa-warn-soft: #33290f;
+  --casa-danger: #e86a53;
+  --casa-danger-soft: #3a1d17;
+
+  --casa-magic: #e0b653;
+  --casa-magic-soft: #322712;
+
+  --casa-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --casa-shadow-md: 0 2px 4px rgb(0 0 0 / 0.3), 0 6px 16px rgb(0 0 0 / 0.45);
+  --casa-shadow-lg: 0 4px 8px rgb(0 0 0 / 0.3), 0 16px 40px rgb(0 0 0 / 0.55);
+  --casa-shadow-accent: 0 4px 14px rgb(240 120 78 / 0.3);
+}
+
+/* ── Couleurs des membres ────────────────────────────────────────
+   8 teintes distinctes, lisibles sur crème comme sur nuit.
+   `base`  → barres d'événement, points, avatars
+   `soft`  → fonds de pastille / chips
+   `ink`   → texte posé sur `soft`
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --member-blue: #2f7fb8;
+  --member-blue-soft: #e3f0f9;
+  --member-blue-ink: #1a577f;
+
+  --member-green: #3f9e6b;
+  --member-green-soft: #e2f3ea;
+  --member-green-ink: #256b45;
+
+  --member-pink: #dd5f94;
+  --member-pink-soft: #fce6ef;
+  --member-pink-ink: #9c3763;
+
+  --member-purple: #8265cc;
+  --member-purple-soft: #ede7fa;
+  --member-purple-ink: #58419a;
+
+  --member-orange: #e0813a;
+  --member-orange-soft: #fbeee1;
+  --member-orange-ink: #98511a;
+
+  --member-teal: #2aa39b;
+  --member-teal-soft: #e0f4f2;
+  --member-teal-ink: #176e68;
+
+  --member-red: #d6543f;
+  --member-red-soft: #fbe7e3;
+  --member-red-ink: #93321f;
+
+  --member-ochre: #b98f2c;
+  --member-ochre-soft: #f8f0dc;
+  --member-ochre-ink: #7c5d12;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --member-blue: #58a6dd;
+    --member-blue-soft: #16303f;
+    --member-blue-ink: #a8d5f2;
+    --member-green: #56b884;
+    --member-green-soft: #153023;
+    --member-green-ink: #a3e0c0;
+    --member-pink: #ec84ae;
+    --member-pink-soft: #3b1a28;
+    --member-pink-ink: #f8bdd4;
+    --member-purple: #a288e0;
+    --member-purple-soft: #251c3d;
+    --member-purple-ink: #cfc0f5;
+    --member-orange: #eb9d5f;
+    --member-orange-soft: #3b2716;
+    --member-orange-ink: #f7c99e;
+    --member-teal: #4cc0b8;
+    --member-teal-soft: #12332f;
+    --member-teal-ink: #a2e4df;
+    --member-red: #e8735d;
+    --member-red-soft: #3b1d17;
+    --member-red-ink: #f6b3a4;
+    --member-ochre: #d9ae4b;
+    --member-ochre-soft: #332913;
+    --member-ochre-ink: #f0d795;
+  }
+}
+
+[data-theme="dark"] {
+  --member-blue: #58a6dd;
+  --member-blue-soft: #16303f;
+  --member-blue-ink: #a8d5f2;
+  --member-green: #56b884;
+  --member-green-soft: #153023;
+  --member-green-ink: #a3e0c0;
+  --member-pink: #ec84ae;
+  --member-pink-soft: #3b1a28;
+  --member-pink-ink: #f8bdd4;
+  --member-purple: #a288e0;
+  --member-purple-soft: #251c3d;
+  --member-purple-ink: #cfc0f5;
+  --member-orange: #eb9d5f;
+  --member-orange-soft: #3b2716;
+  --member-orange-ink: #f7c99e;
+  --member-teal: #4cc0b8;
+  --member-teal-soft: #12332f;
+  --member-teal-ink: #a2e4df;
+  --member-red: #e8735d;
+  --member-red-soft: #3b1d17;
+  --member-red-ink: #f6b3a4;
+  --member-ochre: #d9ae4b;
+  --member-ochre-soft: #332913;
+  --member-ochre-ink: #f0d795;
+}
+
+/* ── Exposition à Tailwind ───────────────────────────────────── */
+@theme inline {
+  --color-bg: var(--casa-bg);
+  --color-bg-elevated: var(--casa-bg-elevated);
+  --color-surface: var(--casa-surface);
+  --color-surface-2: var(--casa-surface-2);
+  --color-surface-3: var(--casa-surface-3);
+
+  --color-ink: var(--casa-ink);
+  --color-ink-2: var(--casa-ink-2);
+  --color-ink-3: var(--casa-ink-3);
+  --color-ink-inverse: var(--casa-ink-inverse);
+
+  --color-line: var(--casa-line);
+  --color-line-strong: var(--casa-line-strong);
+
+  --color-accent: var(--casa-accent);
+  --color-accent-hover: var(--casa-accent-hover);
+  --color-accent-soft: var(--casa-accent-soft);
+  --color-accent-ink: var(--casa-accent-ink);
+
+  --color-success: var(--casa-success);
+  --color-success-soft: var(--casa-success-soft);
+  --color-warn: var(--casa-warn);
+  --color-warn-soft: var(--casa-warn-soft);
+  --color-danger: var(--casa-danger);
+  --color-danger-soft: var(--casa-danger-soft);
+
+  --color-magic: var(--casa-magic);
+  --color-magic-soft: var(--casa-magic-soft);
+
+  /* Rayons doux — jamais anguleux */
+  --radius-casa-sm: 10px;
+  --radius-casa: 12px;
+  --radius-casa-md: 16px;
+  --radius-casa-lg: 20px;
+  --radius-casa-xl: 28px;
+
+  --shadow-casa-sm: var(--casa-shadow-sm);
+  --shadow-casa-md: var(--casa-shadow-md);
+  --shadow-casa-lg: var(--casa-shadow-lg);
+  --shadow-casa-accent: var(--casa-shadow-accent);
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  /* Hauteurs de la chrome applicative */
+  --spacing-nav: 4.5rem;
+  --spacing-tap: 3rem;
+}
+
+/* ── Base ────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    /* 16px plancher absolu — lisibilité aînés (§48) */
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--casa-bg);
+    color: var(--casa-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+  }
+
+  /* Focus visible et généreux — navigation clavier + lecteurs d'écran */
+  :focus-visible {
+    outline: 3px solid var(--casa-accent);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  button,
+  [role="button"],
+  a,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+
+  ::selection {
+    background: var(--casa-accent-soft);
+    color: var(--casa-accent-ink);
+  }
+}
+
+/* ── Utilitaires maison ──────────────────────────────────────── */
+@layer utilities {
+  /* Cible tactile minimale 48×48 même si le visuel est plus petit */
+  .tap {
+    position: relative;
+    min-width: 3rem;
+    min-height: 3rem;
+  }
+
+  /* Encoches iOS / barre gestuelle Android */
+  .safe-b {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .safe-t {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Dégradé chaud discret pour les surfaces "héros" */
+  .casa-glow {
+    background-image: radial-gradient(
+      120% 100% at 50% 0%,
+      var(--casa-accent-soft) 0%,
+      transparent 62%
+    );
+  }
+}
+
+/* ── Mouvement ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
